@@ -1,8 +1,12 @@
 {
   "routes": [
     {
-      "route": "/admin",
+      "route": "/admin/*",
       "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/app/*",
+      "allowedRoles": ["authenticated"]
     }
   ],
   "auth": {
@@ -10,10 +14,13 @@
       "azureActiveDirectory": {
         "userRoles": {
           "admin": [
-            "user@email.com"
+            "ryan.macquarrie@outlook.com"
           ]
         }
       }
     }
+  },
+  "navigationFallback": {
+    "rewrite": "/index.html"
   }
 }
