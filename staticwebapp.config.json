@@ -1,0 +1,19 @@
+{
+  "routes": [
+    {
+      "route": "/admin",
+      "allowedRoles": ["admin"]
+    }
+  ],
+  "auth": {
+    "identityProviders": {
+      "azureActiveDirectory": {
+        "userRoles": {
+          "admin": [
+            "user@email.com"
+          ]
+        }
+      }
+    }
+  }
+}
