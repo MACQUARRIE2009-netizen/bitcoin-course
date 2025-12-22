@@ -1,6 +1,19 @@
+import { useEffect, useState } from "react";
 import "./App.css";
 
 export default function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetch("/.auth/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.clientPrincipal) {
+          setUser(data.clientPrincipal);
+        }
+      });
+  }, []);
+
   return (
     <div
       style={{
@@ -12,35 +25,44 @@ export default function App() {
         alignItems: "center",
         justifyContent: "center",
         fontFamily: "system-ui",
-        borderRadius: "24px",
         padding: "2rem",
       }}
     >
-      <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
-        ₿ Bitcoin Institute
-      </h1>
+      <h1 style={{ fontSize: "3rem" }}>₿ Bitcoin Institute</h1>
 
-      <p style={{ maxWidth: 600, textAlign: "center", opacity: 0.9 }}>
-        Learn Bitcoin the way pilots learn aircraft — structured lessons,
-        videos, and quizzes after every module.
-      </p>
-
-      <div style={{ marginTop: "2rem" }}>
+      {!user ? (
         <a
           href="/.auth/login/aad"
           style={{
+            marginTop: "2rem",
             background: "#7c3aed",
             padding: "12px 20px",
-            borderRadius: "14px",
+            borderRadius: "12px",
             color: "white",
             textDecoration: "none",
-            fontWeight: 600,
+            fontWeight: "bold",
           }}
         >
           Sign in with Email
         </a>
-      </div>
+      ) : (
+        <div style={{ marginTop: "2rem", textAlign: "center" }}>
+          <p>Signed in as {user.userDetails}</p>
+          <a
+            href="/.auth/logout"
+            style={{
+              background: "#ef4444",
+              padding: "10px 16px",
+              borderRadius: "12px",
+              color: "white",
+              textDecoration: "none",
+              fontWeight: "bold",
+            }}
+          >
+            Sign out
+          </a>
+        </div>
+      )}
     </div>
   );
 }
-
