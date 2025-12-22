@@ -1,63 +1,46 @@
-import { useState } from "react";
 import "./App.css";
-import quizzes from "./data/quizzes.json";
 
 export default function App() {
-  const [showQuiz, setShowQuiz] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-
-  const quiz = quizzes[0]; // first quiz for now
-
   return (
-    <div className="app">
-      <header className="header">
-        <h1>Bitcoin Institute</h1>
-        <p>Professional Bitcoin Education Platform</p>
-      </header>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "system-ui",
+        borderRadius: "24px",
+        padding: "2rem",
+      }}
+    >
+      <h1 style={{ fontSize: "3rem", marginBottom: "1rem" }}>
+        ₿ Bitcoin Institute
+      </h1>
 
-      <main className="content">
-        {/* VIDEO SECTION */}
-        <section className="card">
-          <h2>{quiz.topic}</h2>
+      <p style={{ maxWidth: 600, textAlign: "center", opacity: 0.9 }}>
+        Learn Bitcoin the way pilots learn aircraft — structured lessons,
+        videos, and quizzes after every module.
+      </p>
 
-          <video
-            width="100%"
-            controls
-            onEnded={() => setShowQuiz(true)}
-            style={{ borderRadius: "12px", marginTop: "1rem" }}
-          >
-            <source src="/videos/bitcoin-intro.mp4" type="video/mp4" />
-            Your browser does not support video.
-          </video>
-        </section>
-
-        {/* QUIZ SECTION */}
-        {showQuiz && (
-          <section className="card quiz">
-            <h3>{quiz.question}</h3>
-
-            {quiz.options.map((option, index) => (
-              <button
-                key={index}
-                className={`quiz-option ${
-                  selectedAnswer === index
-                    ? index === quiz.correctIndex
-                      ? "correct"
-                      : "wrong"
-                    : ""
-                }`}
-                onClick={() => setSelectedAnswer(index)}
-              >
-                {option}
-              </button>
-            ))}
-
-            {selectedAnswer !== null && (
-              <p className="explanation">{quiz.explanation}</p>
-            )}
-          </section>
-        )}
-      </main>
+      <div style={{ marginTop: "2rem" }}>
+        <a
+          href="/.auth/login/aad"
+          style={{
+            background: "#7c3aed",
+            padding: "12px 20px",
+            borderRadius: "14px",
+            color: "white",
+            textDecoration: "none",
+            fontWeight: 600,
+          }}
+        >
+          Sign in with Email
+        </a>
+      </div>
     </div>
   );
 }
+
