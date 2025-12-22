@@ -1,1 +1,15 @@
-{"routes":[{"route":"/admin/*","allowedRoles":["admin"]},{"route":"/app/*","allowedRoles":["authenticated"]}],"navigationFallback":{"rewrite":"/index.html"},"auth":{"rolesSource":"/.auth/me","identityProviders":{"azureActiveDirectory":{"registration":{"openIdIssuer":"https://login.microsoftonline.com/c00f8f54-2ee0-42ca-b3ed-dadd1806ec75","clientIdSettingName":"AZURE_CLIENT_ID","clientSecretSettingName":"AZURE_CLIENT_SECRET_APP_SETTING_NAME"}}}}}
+{
+  "routes": [
+    {
+      "route": "/",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/courses",
+      "allowedRoles": ["authenticated"]
+    }
+  ],
+  "auth": {
+    "rolesSource": "DEFAULT"
+  }
+}
