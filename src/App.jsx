@@ -1,6 +1,13 @@
+import { useState } from "react";
 import "./App.css";
+import quizzes from "./data/quizzes.json";
 
 export default function App() {
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+  const quiz = quizzes[0]; // first quiz for now
+
   return (
     <div className="app">
       <header className="header">
@@ -9,20 +16,47 @@ export default function App() {
       </header>
 
       <main className="content">
+        {/* VIDEO SECTION */}
         <section className="card">
-          <h2>Foundations & History</h2>
-          <p>Learn the origin, philosophy, and evolution of Bitcoin.</p>
+          <h2>{quiz.topic}</h2>
+
+          <video
+            width="100%"
+            controls
+            onEnded={() => setShowQuiz(true)}
+            style={{ borderRadius: "12px", marginTop: "1rem" }}
+          >
+            <source src="/videos/bitcoin-intro.mp4" type="video/mp4" />
+            Your browser does not support video.
+          </video>
         </section>
 
-        <section className="card">
-          <h2>Technical Foundations</h2>
-          <p>Understand blockchain, cryptography, mining, and consensus.</p>
-        </section>
+        {/* QUIZ SECTION */}
+        {showQuiz && (
+          <section className="card quiz">
+            <h3>{quiz.question}</h3>
 
-        <section className="card">
-          <h2>Quizzes & Progress</h2>
-          <p>Test your knowledge with structured quizzes.</p>
-        </section>
+            {quiz.options.map((option, index) => (
+              <button
+                key={index}
+                className={`quiz-option ${
+                  selectedAnswer === index
+                    ? index === quiz.correctIndex
+                      ? "correct"
+                      : "wrong"
+                    : ""
+                }`}
+                onClick={() => setSelectedAnswer(index)}
+              >
+                {option}
+              </button>
+            ))}
+
+            {selectedAnswer !== null && (
+              <p className="explanation">{quiz.explanation}</p>
+            )}
+          </section>
+        )}
       </main>
     </div>
   );
