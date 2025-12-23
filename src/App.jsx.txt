@@ -32,6 +32,7 @@ const quizzes = Object.values(rawQuizzes).map(topic => ({
    ROOT WRAPPER
    ====================== */
 export default function AppWrapper() {
+{
   return (
     <MsalProvider instance={msalInstance}>
       <App />
