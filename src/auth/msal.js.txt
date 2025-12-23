@@ -6,7 +6,7 @@ import { PublicClientApplication } from "@azure/msal-browser";
    ============================= */
 export const msalConfig = {
   auth: {
-    clientId: "c00f8f54-2ee0-42ca-b3ed-dadd1806ec75", // your Azure App ID
+    clientId: "8dda8c73-9d4b-4e07-94bd-ab9f195db910", // your Azure App ID
     authority: "https://login.microsoftonline.com/common",
     redirectUri: window.location.origin,
   },
