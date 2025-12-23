@@ -1,35 +1,23 @@
 {
   "routes": [
     {
-      "route": "/",
-      "allowedRoles": ["anonymous"]
-    },
-    {
-      "route": "/courses",
-      "allowedRoles": ["authenticated"]
-    },
-    {
       "route": "/.auth/login/*",
       "allowedRoles": ["anonymous"]
     },
     {
       "route": "/.auth/logout",
       "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/.auth/me",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/*",
+      "allowedRoles": ["authenticated"]
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html"
-  },
-  "auth": {
-    "rolesSource": "DEFAULT",
-    "identityProviders": {
-      "azureActiveDirectory": {
-        "registration": {
-          "openIdIssuer": "https://login.microsoftonline.com/c00f8f54-2ee0-42ca-b3ed-dadd1806ec75",
-          "clientIdSettingName": "AZURE_CLIENT_ID",
-          "clientSecretSettingName": "AZURE_CLIENT_SECRET"
-        }
-      }
-    }
   }
 }
