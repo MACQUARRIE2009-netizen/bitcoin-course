@@ -5,14 +5,13 @@ import rawQuizzes from "./bitcoin_quizzes_49_topics.json";
 /* ======================
    QUIZ DATA
    ====================== */
-const quizzes = Object.values(rawQuizzes).map((topic, index) => ({
-  category: topic.category || "General", // Add a category field for grouping
+const quizzes = Object.values(rawQuizzes).map(topic => ({
   title: topic.title,
   questions: topic.questions.map(q => ({
     question: q.question,
     options: q.options,
     correctIndex: q.options.indexOf(q.answer)
-  })),
+  }))
 }));
 
 /* ======================
@@ -63,44 +62,27 @@ export default function App() {
       <header className="header">
         <h1>Bitcoin Institute</h1>
         <p>Signed in as {user.userDetails}</p>
-        <button onClick={logout} className="logout-btn">Logout</button>
+        <button onClick={logout}>Logout</button>
       </header>
 
       <div className="layout">
         <aside className="sidebar">
-          {groupLessonsByCategory(quizzes).map((category, i) => (
-            <div key={i} className="category-section">
-              <h3 className="category-title">{category.name}</h3>
-              {category.lessons.map((lesson, j) => {
-                const locked = j !== 0 && !completed.includes(j - 1);
-                return (
-                  <div key={j} className="lesson-item">
-                    <button
-                      className={`lesson-btn ${locked ? "locked" : ""}`}
-                      disabled={locked}
-                      onClick={() => setActiveLesson(lesson.index)}
-                    >
-                      {lesson.title}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+          {quizzes.map((_, i) => {
+            const locked = i !== 0 && !completed.includes(i - 1);
+            return (
+              <button
+                key={i}
+                className={`lesson-btn ${locked ? "locked" : ""}`}
+                disabled={locked}
+                onClick={() => setActiveLesson(i)}
+              >
+                Lesson {i + 1}
+              </button>
+            );
+          })}
         </aside>
 
         <main className="content">
-          <div className="video-container">
-            <iframe
-              className="video-iframe"
-              src="https://www.youtube.com/embed/VIDEO_ID" // Replace with actual video ID
-              title="Lesson Video"
-              frameBorder="0"
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
-          </div>
-
           <Lesson
             index={activeLesson}
             quiz={quizzes[activeLesson]}
@@ -121,10 +103,11 @@ function Lesson({ index, quiz, onPass }) {
 
   return (
     <>
-      <h2 className="lesson-title">Lesson {index + 1}: {quiz.title}</h2>
+      <h2>Lesson {index + 1}: {quiz.title}</h2>
 
       <div className="video-frame">
-        <button onClick={() => setVideoWatched(true)} className="mark-watched-btn">
+        <p>Lesson Video</p>
+        <button onClick={() => setVideoWatched(true)}>
           Mark Video as Watched
         </button>
       </div>
@@ -200,23 +183,4 @@ function Quiz({ quiz, onPass, setScore }) {
       )}
     </div>
   );
-}
-
-/* ======================
-   HELPER FUNCTION
-   ====================== */
-function groupLessonsByCategory(quizzes) {
-  const categories = {};
-
-  quizzes.forEach((quiz, index) => {
-    if (!categories[quiz.category]) {
-      categories[quiz.category] = [];
-    }
-    categories[quiz.category].push({ ...quiz, index });
-  });
-
-  return Object.keys(categories).map(category => ({
-    name: category,
-    lessons: categories[category]
-  }));
 }
