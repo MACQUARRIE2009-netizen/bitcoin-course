@@ -5,13 +5,14 @@ import rawQuizzes from "./bitcoin_quizzes_49_topics.json";
 /* ======================
    QUIZ DATA
    ====================== */
-const quizzes = Object.values(rawQuizzes).map(topic => ({
+const quizzes = Object.values(rawQuizzes).map((topic, index) => ({
+  category: topic.category || "General", // Add a category field for grouping
   title: topic.title,
   questions: topic.questions.map(q => ({
     question: q.question,
     options: q.options,
     correctIndex: q.options.indexOf(q.answer)
-  }))
+  })),
 }));
 
 /* ======================
@@ -67,20 +68,25 @@ export default function App() {
 
       <div className="layout">
         <aside className="sidebar">
-          {quizzes.map((_, i) => {
-            const locked = i !== 0 && !completed.includes(i - 1);
-            return (
-              <div key={i} className="lesson-item">
-                <button
-                  className={`lesson-btn ${locked ? "locked" : ""}`}
-                  disabled={locked}
-                  onClick={() => setActiveLesson(i)}
-                >
-                  Lesson {i + 1} - {quizzes[i].title}
-                </button>
-              </div>
-            );
-          })}
+          {groupLessonsByCategory(quizzes).map((category, i) => (
+            <div key={i} className="category-section">
+              <h3 className="category-title">{category.name}</h3>
+              {category.lessons.map((lesson, j) => {
+                const locked = j !== 0 && !completed.includes(j - 1);
+                return (
+                  <div key={j} className="lesson-item">
+                    <button
+                      className={`lesson-btn ${locked ? "locked" : ""}`}
+                      disabled={locked}
+                      onClick={() => setActiveLesson(lesson.index)}
+                    >
+                      {lesson.title}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
         </aside>
 
         <main className="content">
@@ -194,4 +200,23 @@ function Quiz({ quiz, onPass, setScore }) {
       )}
     </div>
   );
+}
+
+/* ======================
+   HELPER FUNCTION
+   ====================== */
+function groupLessonsByCategory(quizzes) {
+  const categories = {};
+
+  quizzes.forEach((quiz, index) => {
+    if (!categories[quiz.category]) {
+      categories[quiz.category] = [];
+    }
+    categories[quiz.category].push({ ...quiz, index });
+  });
+
+  return Object.keys(categories).map(category => ({
+    name: category,
+    lessons: categories[category]
+  }));
 }
