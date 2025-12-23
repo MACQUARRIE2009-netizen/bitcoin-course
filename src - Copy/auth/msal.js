@@ -1,0 +1,39 @@
+import { PublicClientApplication } from "@azure/msal-browser";
+
+/* =============================
+   MSAL CONFIG
+   ============================= */
+export const msalConfig = {
+  auth: {
+    clientId: "c00f8f54-2ee0-42ca-b3ed-dadd1806ec75", // replace with real one
+    authority: "https://login.microsoftonline.com/common",
+    redirectUri: window.location.origin,
+  },
+  cache: {
+    cacheLocation: "localStorage",
+    storeAuthStateInCookie: false,
+  },
+};
+
+/* =============================
+   LOGIN REQUEST
+   ============================= */
+export const loginRequest = {
+  scopes: ["User.Read"],
+};
+
+/* =============================
+   MSAL INSTANCE
+   ============================= */
+export const msalInstance = new PublicClientApplication(msalConfig);
+
+/* =============================
+   INIT HELPER
+   ============================= */
+export const initializeMsal = async () => {
+  await msalInstance.initialize();
+  const accounts = msalInstance.getAllAccounts();
+  if (accounts.length > 0) {
+    msalInstance.setActiveAccount(accounts[0]);
+  }
+};
