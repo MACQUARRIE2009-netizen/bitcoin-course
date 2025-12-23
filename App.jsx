@@ -1,13 +1,53 @@
-
 import { useState } from "react";
-import quizzes from "./bitcoin_quizzes_49_topics.json";
 import "./App.css";
+import rawQuizzes from "./bitcoin_quizzes_49_topics.json";
 
-const LESSON_TITLES = quizzes.map(q => q.title);
+import { PublicClientApplication } from "@azure/msal-browser";
+import { MsalProvider, useMsal } from "@azure/msal-react";
 
+/* ======================
+   AZURE CONFIG
+   ====================== */
+const msalInstance = new PublicClientApplication({
+  auth: {
+    clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
+    authority: "https://login.microsoftonline.com/common",
+    redirectUri: window.location.origin
+  }
+});
+
+/* ======================
+   QUIZ DATA FIX
+   ====================== */
+const quizzes = Object.values(rawQuizzes).map(topic => ({
+  title: topic.title,
+  questions: topic.questions.map(q => ({
+    question: q.question,
+    options: q.options,
+    correctIndex: q.options.indexOf(q.answer)
+  }))
+}));
+
+/* ======================
+   APP
+   ====================== */
 export default function App() {
+  return (
+    <MsalProvider instance={msalInstance}>
+      <MainApp />
+    </MsalProvider>
+  );
+}
+
+function MainApp() {
+  const { instance, accounts } = useMsal();
+  const user = accounts[0];
+
   const [activeLesson, setActiveLesson] = useState(0);
   const [completed, setCompleted] = useState([]);
+
+  const login = () => instance.loginPopup({ scopes: ["User.Read"] });
+  const logout = () => instance.logoutPopup();
 
   const unlockLesson = (index) => {
     if (!completed.includes(index)) {
@@ -15,16 +55,28 @@ export default function App() {
     }
   };
 
+  if (!user) {
+    return (
+      <div className="app">
+        <h1>Bitcoin Institute</h1>
+        <button className="submit-btn" onClick={login}>
+          Sign in with Microsoft
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="app">
       <header className="header">
         <h1>Bitcoin Institute</h1>
-        <p>49-Lesson Interactive Bitcoin Course</p>
+        <p>{user.username}</p>
+        <button onClick={logout}>Logout</button>
       </header>
 
       <div className="layout">
         <aside className="sidebar">
-          {LESSON_TITLES.map((title, i) => {
+          {quizzes.map((_, i) => {
             const locked = i !== 0 && !completed.includes(i - 1);
             return (
               <button
@@ -42,7 +94,6 @@ export default function App() {
         <main className="content">
           <Lesson
             index={activeLesson}
-            title={LESSON_TITLES[activeLesson]}
             quiz={quizzes[activeLesson]}
             onPass={() => unlockLesson(activeLesson)}
           />
@@ -52,85 +103,73 @@ export default function App() {
   );
 }
 
-function Lesson({ index, title, quiz, onPass }) {
+/* ======================
+   LESSON + QUIZ
+   ====================== */
+function Lesson({ index, quiz, onPass }) {
+  const [videoWatched, setVideoWatched] = useState(false);
   const [score, setScore] = useState(null);
 
   return (
-    <div className="lesson-view">
-      <h2>Lesson {index + 1}: {title}</h2>
+    <>
+      <h2>{quiz.title}</h2>
 
       <div className="video-frame">
-        <div className="video-placeholder">
-          Video Placeholder (add iframe later)
-        </div>
+        <button onClick={() => setVideoWatched(true)}>
+          Mark Video as Watched
+        </button>
       </div>
 
-      <Quiz quiz={quiz} onPass={onPass} setScore={setScore} />
+      {videoWatched && (
+        <Quiz quiz={quiz} onPass={onPass} setScore={setScore} />
+      )}
 
       {score !== null && (
         <p className="score-display">Score: {score}%</p>
       )}
-    </div>
+    </>
   );
 }
 
 function Quiz({ quiz, onPass, setScore }) {
   const [answers, setAnswers] = useState({});
-  const [submitted, setSubmitted] = useState(false);
 
-  const selectAnswer = (qIndex, optIndex) => {
-    if (submitted) return;
-    setAnswers(prev => ({ ...prev, [qIndex]: optIndex }));
-  };
-
-  const submitQuiz = () => {
+  const submit = () => {
     let correct = 0;
     quiz.questions.forEach((q, i) => {
       if (answers[i] === q.correctIndex) correct++;
     });
-    const percent = Math.round((correct / quiz.questions.length) * 100);
-    setScore(percent);
-    setSubmitted(true);
-    if (percent >= 70) onPass();
+
+    const score = Math.round(
+      (correct / quiz.questions.length) * 100
+    );
+
+    setScore(score);
+    if (score >= 70) onPass();
   };
 
   return (
     <div className="quiz">
-      <h3>Lesson Quiz (70% required to pass)</h3>
-
       {quiz.questions.map((q, i) => (
-        <div key={i} className="question">
-          <p><strong>{i + 1}. {q.question}</strong></p>
-          {q.options.map((opt, idx) => (
-            <label key={idx} className="option">
+        <div key={i}>
+          <p>{q.question}</p>
+          {q.options.map((o, j) => (
+            <label key={j}>
               <input
                 type="radio"
-                name={`q-${i}`}
-                checked={answers[i] === idx}
-                disabled={submitted}
-                onChange={() => selectAnswer(i, idx)}
+                name={`q${i}`}
+                onChange={() =>
+                  setAnswers(a => ({ ...a, [i]: j }))
+                }
               />
-              {opt}
+              {o}
             </label>
           ))}
         </div>
       ))}
-
-      {!submitted && (
-        <button
-          className="submit-btn"
-          disabled={Object.keys(answers).length !== quiz.questions.length}
-          onClick={submitQuiz}
-        >
-          Submit Quiz
-        </button>
-      )}
-
-      {submitted && (
-        <div className="result">
-          {Object.keys(answers).length} answered.
-        </div>
-      )}
+      <button className="submit-btn" onClick={submit}>
+        Submit Quiz
+      </button>
     </div>
   );
 }
