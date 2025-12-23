@@ -57,34 +57,75 @@ function Lesson({ lesson, index, onPass }) {
 function Quiz({ quiz, onPass }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(null);
 
-  const submit = () => {
+  const handleSelect = (questionIndex, optionIndex) => {
+    if (submitted) return;
+    setAnswers(prev => ({ ...prev, [questionIndex]: optionIndex }));
+  };
+
+  const submitQuiz = () => {
     let correct = 0;
+
     quiz.questions.forEach((q, i) => {
       if (answers[i] === q.correctIndex) correct++;
     });
-    const pct = Math.round((correct / quiz.questions.length) * 100);
-    setScore(pct);
+
+    const percent = Math.round(
+      (correct / quiz.questions.length) * 100
+    );
+
+    setScore(percent);
     setSubmitted(true);
-    if (pct >= 70) onPass();
+
+    if (percent >= 70) {
+      onPass();
+    }
   };
 
   return (
     <div className="quiz">
+      <h3>Lesson Quiz</h3>
+
       {quiz.questions.map((q, i) => (
-        <div key={i}>
-          <p>{q.question}</p>
-          {q.options.map((o, j) => (
-            <label key={j}>
-              <input type="radio" name={i} onChange={() => setAnswers({...answers, [i]: j})} />
-              {o}
+        <div key={i} className="quiz-question">
+          <p><strong>{i + 1}. {q.question}</strong></p>
+
+          {q.options.map((opt, idx) => (
+            <label key={idx} className="quiz-option">
+              <input
+                type="radio"
+                name={`question-${i}`}
+                checked={answers[i] === idx}
+                onChange={() => handleSelect(i, idx)}
+                disabled={submitted}
+              />
+              {opt}
             </label>
           ))}
         </div>
       ))}
-      {!submitted && <button onClick={submit}>Submit</button>}
-      {submitted && <p>Score: {score}%</p>}
+
+      {!submitted && (
+        <button
+          className="btn"
+          onClick={submitQuiz}
+          disabled={Object.keys(answers).length !== quiz.questions.length}
+        >
+          Submit Quiz
+        </button>
+      )}
+
+      {submitted && (
+        <div className="quiz-result">
+          <h4>Your Score: {score}%</h4>
+          {score >= 70 ? (
+            <p className="pass">✅ Passed — next lesson unlocked</p>
+          ) : (
+            <p className="fail">❌ Not passed — review and try again</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
