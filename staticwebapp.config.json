@@ -9,12 +9,8 @@
       "allowedRoles": ["anonymous"]
     },
     {
-      "route": "/.auth/me",
-      "allowedRoles": ["anonymous"]
-    },
-    {
       "route": "/*",
-      "allowedRoles": ["authenticated"]
+      "allowedRoles": ["anonymous", "authenticated"]
     }
   ]
 }
