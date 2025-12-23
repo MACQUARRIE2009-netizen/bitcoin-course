@@ -1,4 +1,99 @@
-{
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Website</title>
+  <style>
+    /* Reset margin and padding for consistency */
+    body, h1, h2, p {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Body Styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;  /* Light background */
+      color: #fff;  /* Default text color */
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Header Section (logo placeholder) */
+    .header {
+      background-color: #6a1b9a;  /* Purple header */
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Placeholder logo text */
+    .header h1 {
+      font-size: 32px;
+      color: white;
+      font-weight: normal;
+    }
+
+    /* Main Quiz Container */
+    .quiz-container {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Section Styling - each section will have a purple hue */
+    .section {
+      padding: 20px;
+      background-color: #9c27b0;  /* Purple background for each section */
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h2 {
+      margin-top: 0;
+    }
+
+    /* Styling for questions */
+    .question {
+      margin-bottom: 10px;
+    }
+
+    /* Styling for answers */
+    .answers {
+      list-style-type: none;
+      padding-left: 0;
+    }
+
+    .answers li {
+      background-color: #7b1fa2;  /* Darker purple for answers */
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Hover effect for answers */
+    .answers li:hover {
+      background-color: #ab47bc;  /* Lighter purple when hovering */
+    }
+  </style>
+</head>
+<body>
+  <!-- Header with logo placeholder -->
+  <div class="header">
+    <h1>Future Logo Here</h1>  <!-- You can replace this with an image later -->
+  </div>
+
+  <!-- Main quiz container -->
+  <div class="quiz-container" id="quiz-container">
+    <!-- Sections will be inserted dynamically by JavaScript -->
+  </div>
+
+  <script>
+    // Quiz data ()
+    const quizData = [
+     {
     "sections": [
         {
             "section_number": 1,
@@ -5193,31 +5288,26 @@
                     "correct_answer": "A"
                 }
             ]
-        }
-    ]
-}<head>
-  <style>
-    body {
-      background-color: purple; /* Keeps the purple background */
-      color: white; /* Makes text white so it's visible */
-      font-family: Arial, sans-serif; /* Optional: makes the text more readable */
-    }
-
-    h1, h2, h3, p {
-      color: white; /* Ensures headings and paragraphs are visible */
-    }
-
-    /* Example of styling quiz questions */
-    .question {
-      margin-bottom: 20px;
-    }
-
-    .answers {
-      list-style-type: none; /* Removes bullet points */
-    }
-
-    .answers li {
-      margin: 5px 0;
-    }
-  </style>
-</head>
+          // Render quiz sections dynamically
+    const container = document.getElementById('quiz-container');
+    quizData.forEach(section => {
+      const sectionElement = document.createElement('div');
+      sectionElement.classList.add('section');
+      sectionElement.innerHTML = `
+        <h2>${section.section_title}</h2>
+        <div class="questions">
+          ${section.questions.map(q => `
+            <div class="question">
+              <p>${q.question}</p>
+              <ul class="answers">
+                ${q.answers.map(answer => `<li>${answer}</li>`).join('')}
+              </ul>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      container.appendChild(sectionElement);
+    });
+  </script>
+</body>
+</html>
