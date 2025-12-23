@@ -1,0 +1,10 @@
+import rawQuizzes from "./bitcoin_quizzes_49_topics.json";
+
+export const quizzes = Object.values(rawQuizzes).map(topic => ({
+  title: topic.title,
+  questions: topic.questions.map(q => ({
+    question: q.question,
+    options: q.options,
+    correctIndex: q.options.indexOf(q.answer)
+  }))
+}));
