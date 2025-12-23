@@ -5195,4 +5195,29 @@
             ]
         }
     ]
-}
+}<head>
+  <style>
+    body {
+      background-color: purple; /* Keeps the purple background */
+      color: white; /* Makes text white so it's visible */
+      font-family: Arial, sans-serif; /* Optional: makes the text more readable */
+    }
+
+    h1, h2, h3, p {
+      color: white; /* Ensures headings and paragraphs are visible */
+    }
+
+    /* Example of styling quiz questions */
+    .question {
+      margin-bottom: 20px;
+    }
+
+    .answers {
+      list-style-type: none; /* Removes bullet points */
+    }
+
+    .answers li {
+      margin: 5px 0;
+    }
+  </style>
+</head>
