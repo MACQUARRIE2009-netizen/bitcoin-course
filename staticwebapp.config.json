@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "routes": [
     {
@@ -14,3 +15,6 @@
     }
   ]
 }
+=======
+{"routes":[{"route":"/.auth/login/*","allowedRoles":["anonymous"]},{"route":"/.auth/logout","allowedRoles":["anonymous"]},{"route":"/.auth/me","allowedRoles":["anonymous"]},{"route":"/*","allowedRoles":["authenticated"]}]}
+>>>>>>> a65c306b4e23862f0f55a04b6f864c6f8048737b
