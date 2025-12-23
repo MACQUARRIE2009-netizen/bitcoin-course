@@ -1,27 +1,9 @@
-// rebuild trigger
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import rawQuizzes from "./bitcoin_quizzes_49_topics.json";
 
 /* ======================
-   AZURE MSAL CONFIG
-   ====================== */
-import { PublicClientApplication } from "@azure/msal-browser";
-import { MsalProvider, useMsal } from "@azure/msal-react";
-
-const msalInstance = new PublicClientApplication({
-  auth: {
-    clientId: import.meta.env.VITE_AZURE_CLIENT_ID,
-    authority: "https://login.microsoftonline.com/consumers",
-    redirectUri: window.location.origin
-  },
-  cache: {
-    cacheLocation: "localStorage"
-  }
-});
-
-/* ======================
-   QUIZ DATA NORMALIZATION
+   QUIZ DATA
    ====================== */
 const quizzes = Object.values(rawQuizzes).map(topic => ({
   title: topic.title,
@@ -33,34 +15,29 @@ const quizzes = Object.values(rawQuizzes).map(topic => ({
 }));
 
 /* ======================
-   ROOT WRAPPER
-   ====================== */
-export default function AppWrapper() {
-  return (
-    <MsalProvider instance={msalInstance}>
-      <App />
-    </MsalProvider>
-  );
-}
-
-/* ======================
    MAIN APP
    ====================== */
-function App() {
-  const { instance, accounts } = useMsal();
-  const user = accounts[0];
-
+export default function App() {
+  const [user, setUser] = useState(null);
   const [activeLesson, setActiveLesson] = useState(0);
   const [completed, setCompleted] = useState([]);
 
-  const login = async () => {
-    await instance.loginPopup({
-      scopes: ["User.Read"]
-    });
+  useEffect(() => {
+    fetch("/.auth/me")
+      .then(res => res.json())
+      .then(data => {
+        if (data?.clientPrincipal) {
+          setUser(data.clientPrincipal);
+        }
+      });
+  }, []);
+
+  const login = () => {
+    window.location.href = "/.auth/login/aad";
   };
 
-  const logout = async () => {
-    await instance.logoutPopup();
+  const logout = () => {
+    window.location.href = "/.auth/logout";
   };
 
   const unlockLesson = (index) => {
@@ -84,7 +61,7 @@ function App() {
     <div className="app">
       <header className="header">
         <h1>Bitcoin Institute</h1>
-        <p>Signed in as {user.username}</p>
+        <p>Signed in as {user.userDetails}</p>
         <button onClick={logout}>Logout</button>
       </header>
 
@@ -168,9 +145,7 @@ function Quiz({ quiz, onPass, setScore }) {
     setScore(percent);
     setSubmitted(true);
 
-    if (percent >= 70) {
-      onPass();
-    }
+    if (percent >= 70) onPass();
   };
 
   return (
