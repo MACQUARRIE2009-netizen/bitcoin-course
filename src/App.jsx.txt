@@ -10,9 +10,9 @@ import { MsalProvider, useMsal } from "@azure/msal-react";
 
 const msalInstance = new PublicClientApplication({
   auth: {
-    clientId: "8dda8c73-9d4b-4e07-94bd-ab9f195db910",
-    authority: "https://login.microsoftonline.com/common",
-    redirectUri: window.location.origin
+    clientId: "cc3a72b9-ae62-4f80-acec-135485e4d35d",
+    authority: "https://login.microsoftonline.com/consumers",
+    redirectUri: "http://localhost:5173"
   }
 });
 
@@ -32,7 +32,6 @@ const quizzes = Object.values(rawQuizzes).map(topic => ({
    ROOT WRAPPER
    ====================== */
 export default function AppWrapper() {
-{
   return (
     <MsalProvider instance={msalInstance}>
       <App />
@@ -87,7 +86,7 @@ function App() {
 
       <div className="layout">
         <aside className="sidebar">
-          {quizzes.map((q, i) => {
+          {quizzes.map((_, i) => {
             const locked = i !== 0 && !completed.includes(i - 1);
             return (
               <button
@@ -126,7 +125,6 @@ function Lesson({ index, quiz, onPass }) {
       <h2>Lesson {index + 1}: {quiz.title}</h2>
 
       <div className="video-frame">
-        <p>Lesson Video</p>
         <button onClick={() => setVideoWatched(true)}>
           Mark Video as Watched
         </button>
