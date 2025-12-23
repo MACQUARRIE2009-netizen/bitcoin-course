@@ -103,11 +103,18 @@ function Lesson({ index, quiz, onPass }) {
 
   return (
     <>
-      <h2>Lesson {index + 1}: {quiz.title}</h2>
+      <h2 className="lesson-title">Lesson {index + 1}: {quiz.title}</h2>
 
       <div className="video-frame">
-        <p>Lesson Video</p>
-        <button onClick={() => setVideoWatched(true)}>
+        <iframe
+          className="video-iframe"
+          src="https://www.youtube.com/embed/VIDEO_ID" // Replace with actual video ID
+          title="Lesson Video"
+          frameBorder="0"
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+        <button onClick={() => setVideoWatched(true)} className="mark-watched-btn">
           Mark Video as Watched
         </button>
       </div>

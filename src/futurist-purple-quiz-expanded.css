@@ -1,7 +1,6 @@
+/* Futuristic Purple Theme with Clean Layout */
 
-/* Expanded Futuristic Purple Quiz Theme */
-
-/* Root color variables for easy customization */
+/* Root color variables */
 :root {
   --bg-main: #0b061a;
   --bg-card: #160b2e;
@@ -10,7 +9,7 @@
   --text-main: #e9e7ff;
   --text-muted: #b8b5ff;
   --border-glow: rgba(139, 92, 246, 0.4);
-  --btn-glow: rgba(139, 92, 246, 0.8);
+  --video-border: rgba(139, 92, 246, 0.15);
   --btn-hover-bg: rgba(139, 92, 246, 0.2);
   --shadow-color: rgba(139, 92, 246, 0.25);
   --hover-color: rgba(139, 92, 246, 0.3);
@@ -30,17 +29,45 @@ body {
   padding: 2rem;
 }
 
-h1, h2, h3 {
-  font-family: "Roboto", sans-serif;
-}
-
 .quiz-container {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  animation: fadeIn 1s ease-out;
+  gap: 2rem;
+}
+
+.section {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.1);
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--purple-glow);
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.6);
+  margin-bottom: 1.5rem;
+}
+
+.video-container {
+  max-width: 100%;
+  height: 300px;
+  margin-bottom: 1.5rem;
+  background: #000;
+  border-radius: 8px;
+  border: 4px solid var(--video-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video-container iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
 }
 
 .question-card {
@@ -49,11 +76,6 @@ h1, h2, h3 {
   border-radius: 14px;
   padding: 1.5rem;
   box-shadow: 0 0 25px rgba(139, 92, 246, 0.15);
-  transition: all 0.3s ease;
-}
-
-.question-card:hover {
-  box-shadow: 0 0 35px var(--purple-glow);
 }
 
 .question-text {
@@ -76,13 +98,11 @@ h1, h2, h3 {
   padding: 0.75rem 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 1.1rem;
-  text-align: left;
 }
 
 .answer-option:hover {
-  background: var(--btn-hover-bg);
-  box-shadow: 0 0 12px var(--btn-glow);
+  background: var(--purple-glow);
+  box-shadow: 0 0 12px rgba(167, 139, 250, 0.35);
   transform: translateY(-1px);
 }
 
@@ -91,59 +111,7 @@ h1, h2, h3 {
   border-color: var(--purple-main);
 }
 
-.section-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin: 2rem 0 1rem;
-  color: var(--purple-glow);
-  text-shadow: 0 0 8px rgba(167, 139, 250, 0.6);
-  animation: fadeIn 1s ease-out;
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(-50px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  body {
-    padding: 1.5rem;
-  }
-
-  .quiz-container {
-    padding: 0 1rem;
-  }
-
-  .question-card {
-    padding: 1rem;
-  }
-
-  .answer-option {
-    font-size: 1rem;
-    padding: 0.75rem;
-  }
-}
-
-@media (max-width: 480px) {
-  body {
-    padding: 1rem;
-  }
-
-  .quiz-container {
-    padding: 0 0.5rem;
-  }
-
-  .section-title {
-    font-size: 1.4rem;
-  }
-
-  .question-text {
-    font-size: 1.1rem;
-  }
-}
-
-/* Adding animations to buttons */
+/* Button with hover effects */
 button {
   border-radius: 8px;
   padding: 0.8rem 1.2rem;
@@ -164,17 +132,53 @@ button:active {
   background-color: var(--purple-main);
 }
 
-/* Adding loading animation for better user experience */
-.loader {
-  border: 8px solid #f3f3f3;
-  border-top: 8px solid var(--purple-main);
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 2s linear infinite;
+/* Responsive Layout */
+@media (max-width: 768px) {
+  body {
+    padding: 1.5rem;
+  }
+
+  .quiz-container {
+    padding: 0 1rem;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .question-text {
+    font-size: 1.1rem;
+  }
+
+  .answer-option {
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+
+  .video-container {
+    height: 200px;
+  }
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+@media (max-width: 480px) {
+  body {
+    padding: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+  }
+
+  .question-text {
+    font-size: 1rem;
+  }
+
+  .answer-option {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+
+  .video-container {
+    height: 180px;
+  }
 }
