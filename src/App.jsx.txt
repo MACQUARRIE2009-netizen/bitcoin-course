@@ -10,7 +10,7 @@ import { MsalProvider, useMsal } from "@azure/msal-react";
 
 const msalInstance = new PublicClientApplication({
   auth: {
-    clientId: "cc3a72b9-ae62-4f80-acec-135485e4d35d",
+    clientId: "8dda8c73-9d4b-4e07-94bd-ab9f195db910",
     authority: "https://login.microsoftonline.com/consumers",
     redirectUri: "http://localhost:5173"
   }
