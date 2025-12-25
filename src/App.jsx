@@ -1,193 +1,55 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./App.css";
-import rawQuizzes from "./bitcoin_quizzes_49_topics.json";
+import quizzes from "./bitcoin_quizzes_49_topics.json";
 
-/* ======================
-   QUIZ DATA
-   ====================== */
-const quizzes = Object.values(rawQuizzes).map(topic => ({
-  title: topic.title,
-  questions: topic.questions.map(q => ({
-    question: q.question,
-    options: q.options,
-    correctIndex: q.options.indexOf(q.answer)
-  }))
-}));
-
-/* ======================
-   MAIN APP
-   ====================== */
 export default function App() {
-  const [user, setUser] = useState(null);
-  const [activeLesson, setActiveLesson] = useState(0);
-  const [completed, setCompleted] = useState([]);
+  const [sectionIndex, setSectionIndex] = useState(0);
 
-  useEffect(() => {
-    fetch("/.auth/me")
-      .then(res => res.json())
-      .then(data => {
-        if (data?.clientPrincipal) {
-          setUser(data.clientPrincipal);
-        }
-      });
-  }, []);
-
-  const login = () => {
-    window.location.href = "/.auth/login/aad";
-  };
-
-  const logout = () => {
-    window.location.href = "/.auth/logout";
-  };
-
-  const unlockLesson = (index) => {
-    if (!completed.includes(index)) {
-      setCompleted(prev => [...prev, index]);
-    }
-  };
-
-  if (!user) {
-    return (
-      <div className="app">
-        <h1>Bitcoin Institute</h1>
-        <button className="submit-btn" onClick={login}>
-          Sign in with Microsoft
-        </button>
-      </div>
-    );
-  }
+  const section = quizzes.sections?.[sectionIndex];
 
   return (
     <div className="app">
       <header className="header">
-        <h1>Bitcoin Institute</h1>
-        <p>Signed in as {user.userDetails}</p>
-        <button onClick={logout}>Logout</button>
+        <h1>Bitcoin Course</h1>
+        <button>Email Login</button>
       </header>
 
       <div className="layout">
         <aside className="sidebar">
-          {quizzes.map((_, i) => {
-            const locked = i !== 0 && !completed.includes(i - 1);
-            return (
-              <button
-                key={i}
-                className={`lesson-btn ${locked ? "locked" : ""}`}
-                disabled={locked}
-                onClick={() => setActiveLesson(i)}
-              >
-                Lesson {i + 1}
-              </button>
-            );
-          })}
+          {quizzes.sections.map((s, i) => (
+            <button
+              key={i}
+              className="lesson-btn"
+              onClick={() => setSectionIndex(i)}
+            >
+              {s.sectionTitle}
+            </button>
+          ))}
         </aside>
 
         <main className="content">
-          <Lesson
-            index={activeLesson}
-            quiz={quizzes[activeLesson]}
-            onPass={() => unlockLesson(activeLesson)}
-          />
+          {section ? (
+            <div className="quiz">
+              <h2>{section.sectionTitle}</h2>
+
+              {section.questions.map((q, qi) => (
+                <div key={qi} className="question">
+                  <p>{q.question}</p>
+
+                  {Object.entries(q.options).map(([key, val]) => (
+                    <label key={key} className="option">
+                      <input type="radio" name={`q-${qi}`} />
+                      {key}. {val}
+                    </label>
+                  ))}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>No section loaded</p>
+          )}
         </main>
       </div>
-    </div>
-  );
-}
-
-/* ======================
-   LESSON
-   ====================== */
-function Lesson({ index, quiz, onPass }) {
-  const [videoWatched, setVideoWatched] = useState(false);
-  const [score, setScore] = useState(null);
-
-  return (
-    <>
-      <h2 className="lesson-title">Lesson {index + 1}: {quiz.title}</h2>
-
-      <div className="video-frame">
-        <iframe
-          className="video-iframe"
-          src="https://www.youtube.com/embed/VIDEO_ID" // Replace with actual video ID
-          title="Lesson Video"
-          frameBorder="0"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-        <button onClick={() => setVideoWatched(true)} className="mark-watched-btn">
-          Mark Video as Watched
-        </button>
-      </div>
-
-      {videoWatched ? (
-        <Quiz quiz={quiz} onPass={onPass} setScore={setScore} />
-      ) : (
-        <p>Watch the video to unlock the quiz</p>
-      )}
-
-      {score !== null && (
-        <p className="score-display">Score: {score}%</p>
-      )}
-    </>
-  );
-}
-
-/* ======================
-   QUIZ
-   ====================== */
-function Quiz({ quiz, onPass, setScore }) {
-  const [answers, setAnswers] = useState({});
-  const [submitted, setSubmitted] = useState(false);
-
-  const submitQuiz = () => {
-    let correct = 0;
-    quiz.questions.forEach((q, i) => {
-      if (answers[i] === q.correctIndex) correct++;
-    });
-
-    const percent = Math.round(
-      (correct / quiz.questions.length) * 100
-    );
-
-    setScore(percent);
-    setSubmitted(true);
-
-    if (percent >= 70) onPass();
-  };
-
-  return (
-    <div className="quiz">
-      <h3>Quiz (70% required to pass)</h3>
-
-      {quiz.questions.map((q, i) => (
-        <div key={i} className="question">
-          <p><strong>{i + 1}. {q.question}</strong></p>
-
-          {q.options.map((opt, idx) => (
-            <label key={idx} className="option">
-              <input
-                type="radio"
-                name={`q-${i}`}
-                disabled={submitted}
-                onChange={() =>
-                  setAnswers(prev => ({ ...prev, [i]: idx }))
-                }
-              />
-              {opt}
-            </label>
-          ))}
-        </div>
-      ))}
-
-      {!submitted && (
-        <button
-          className="submit-btn"
-          disabled={Object.keys(answers).length !== quiz.questions.length}
-          onClick={submitQuiz}
-        >
-          Submit Quiz
-        </button>
-      )}
     </div>
   );
 }
