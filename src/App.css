@@ -1,42 +1,124 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f3ff; /* very light purple */
+  color: #1f2937; /* dark readable text */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* ===== APP ===== */
+.app {
+  min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, #6d28d9, #7c3aed);
+  color: white;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.card {
-  padding: 2em;
+.header button {
+  background: white;
+  color: #6d28d9;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-.read-the-docs {
-  color: #888;
+/* ===== LAYOUT ===== */
+.layout {
+  display: flex;
+  min-height: calc(100vh - 72px);
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 240px;
+  background: #ede9fe;
+  padding: 12px;
+  border-right: 1px solid #ddd6fe;
+}
+
+.lesson-btn {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 8px;
+  background: white;
+  border: 1px solid #ddd6fe;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 500;
+}
+
+.lesson-btn:hover {
+  background: #f5f3ff;
+}
+
+.lesson-btn.locked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===== CONTENT ===== */
+.content {
+  flex: 1;
+  padding: 24px;
+  background: #ffffff;
+}
+
+/* ===== VIDEO ===== */
+.video-frame {
+  border: 2px dashed #c4b5fd;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+/* ===== QUIZ ===== */
+.quiz {
+  margin-top: 20px;
+}
+
+.question {
+  margin-bottom: 16px;
+}
+
+.option {
+  display: block;
+  margin: 6px 0;
+  cursor: pointer;
+}
+
+/* ===== BUTTON ===== */
+.submit-btn {
+  background: #6d28d9;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.submit-btn:disabled {
+  background: #a78bfa;
+  cursor: not-allowed;
+}
+
+/* ===== SCORE ===== */
+.score-display {
+  margin-top: 12px;
+  font-weight: bold;
+  color: #15803d;
 }
